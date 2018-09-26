@@ -90,7 +90,7 @@ export default class WatsonVisualRecognition{
             let array = [];
             for(let i=0;i<classes.length;i++){
                 if(classes[i].score >= 0.6) {
-                    let div = '<tr><th>' + classes[i].class + '</th>' + '<th>' + ((classes[i].score)*100).toFixed(1) + '%</th></tr>';
+                    let div = '<tr><th style="padding:10px; text-align:left">' + classes[i].class + '</th>' + '<th>' + ((classes[i].score)*100).toFixed(1) + '%</th></tr>';
                     array.push(div);
                 }
             }
@@ -107,7 +107,7 @@ export default class WatsonVisualRecognition{
 
         var parser = document.createElement('a');
         parser.href = this.url;
-       
+
         this.fileTransfer.upload(imageUri, 'https://apikey:'+this.apikey+'@'+parser.hostname+parser.pathname+'/v3/classify?version=2018-03-19&owners=me&classifier_ids='+this.modelId, options)
           .then((data) => {
             spinnerElement.style.visibility = "hidden";

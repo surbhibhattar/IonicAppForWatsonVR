@@ -11,7 +11,7 @@ export class HomePage {
   watsonVisualRecognition:WatsonVisualRecognition;
   apikey = 'fGVfMT4OwLaRremH5nhnjOKuLVO_WcM5r6rcPFQf9tBU';
   url = 'https://gateway.watsonplatform.net/visual-recognition/api';
-  modelId = 'Electricalcables_1306878467';
+  modelId = 'default';
   constructor(public navCtrl: NavController, private ngZone:NgZone) {
     this.watsonVisualRecognition=new WatsonVisualRecognition(this.apikey,this.url,this.modelId,ngZone);
     
