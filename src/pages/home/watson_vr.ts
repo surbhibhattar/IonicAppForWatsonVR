@@ -5,7 +5,6 @@ import { Base64 } from '@ionic-native/base64';
 import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-native/file-transfer';
 
 export default class WatsonVisualRecognition{
-
     apikey:string;
     camera:Camera;
     imagePicker: ImagePicker;
@@ -22,7 +21,7 @@ export default class WatsonVisualRecognition{
         this.fileTransfer = this.transfer.create();
     }
 
-    takePicture(imageElement,resultElement): void{
+    takePicture(imageElement, resultElement, spinnerElement): void{
 
         imageElement.setAttribute('src','http://www.redbooks.ibm.com/images/fp/cognitiveapps/visualrecognition.svg');
         resultElement.innerHTML = '';
@@ -44,7 +43,7 @@ export default class WatsonVisualRecognition{
               this.base64.encodeFile(imageData).then((base64File: string) => {
     
                 imageElement.setAttribute('src',base64File);
-                self.doRecognition(imageData.replace("file://",""),resultElement);
+                self.doRecognition(imageData.replace("file://",""), resultElement, spinnerElement);
     
               }, (err) => {
                 console.log(err);
@@ -56,7 +55,7 @@ export default class WatsonVisualRecognition{
           
         }
     
-      chooseFromGallery(imageElement,resultElement): void{
+      chooseFromGallery(imageElement, resultElement, spinnerElement): void{
     
         imageElement.setAttribute('src','http://www.redbooks.ibm.com/images/fp/cognitiveapps/visualrecognition.svg');
         resultElement.innerHTML = '';
@@ -75,7 +74,7 @@ export default class WatsonVisualRecognition{
           this.base64.encodeFile(results[0]).then((base64File: string) => {
     
             imageElement.setAttribute('src',base64File);
-            self.doRecognition(results[0].replace("file://",""),resultElement);
+            self.doRecognition(results[0].replace("file://",""), resultElement, spinnerElement);
           }, (err) => {
             console.log(err);
           });
@@ -94,7 +93,8 @@ export default class WatsonVisualRecognition{
             return array;
       }
     
-      doRecognition(imageUri,resultElement){
+      doRecognition(imageUri, resultElement, spinnerElement){
+        spinnerElement.style.visibility = "visible";
         const self = this;
         let options: FileUploadOptions = {
           fileKey: 'images_file',
@@ -103,9 +103,10 @@ export default class WatsonVisualRecognition{
 
         this.fileTransfer.upload(imageUri, 'https://apikey:'+this.apikey+'@gateway.watsonplatform.net/visual-recognition/api/v3/classify?version=2018-03-19', options)
           .then((data) => {
+            spinnerElement.style.visibility = "hidden";
             console.log(data);
             let array = self.fetchResults(JSON.parse(data.response));
-            resultElement.innerHTML = array.toString();
+            resultElement.innerHTML = array.toString().replace(/,/g,'');
           }, (err) => {
             console.log(err);
           })
