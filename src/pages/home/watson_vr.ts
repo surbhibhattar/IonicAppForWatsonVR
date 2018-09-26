@@ -6,14 +6,18 @@ import { FileTransfer, FileUploadOptions, FileTransferObject } from '@ionic-nati
 
 export default class WatsonVisualRecognition{
     apikey:string;
+    url:string;
+    modelId:string;
     camera:Camera;
     imagePicker: ImagePicker;
     base64: Base64;
     transfer: FileTransfer;
     fileTransfer: FileTransferObject;
    
-    constructor(apiKey,private ngZone:NgZone){
+    constructor(apiKey,url,modelId,private ngZone:NgZone){
         this.apikey=apiKey;
+        this.url=url;
+        this.modelId=modelId;
         this.camera=new Camera();
         this.imagePicker=new ImagePicker();
         this.base64=new Base64();
@@ -101,7 +105,10 @@ export default class WatsonVisualRecognition{
           fileName: imageUri.substr(imageUri.lastIndexOf('/')+1)
         }
 
-        this.fileTransfer.upload(imageUri, 'https://apikey:'+this.apikey+'@gateway.watsonplatform.net/visual-recognition/api/v3/classify?version=2018-03-19', options)
+        var parser = document.createElement('a');
+        parser.href = this.url;
+       
+        this.fileTransfer.upload(imageUri, 'https://apikey:'+this.apikey+'@'+parser.hostname+parser.pathname+'/v3/classify?version=2018-03-19&owners=me&classifier_ids='+this.modelId, options)
           .then((data) => {
             spinnerElement.style.visibility = "hidden";
             console.log(data);
